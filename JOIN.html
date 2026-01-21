@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Registration Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background-color: #5568d3;
+        }
+
+        .submit-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+        .success-message {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Check if user is logged in
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('role');
+            sessionStorage.removeItem('loginTime');
+            window.location.href = 'login.html';
+        }
+    </script>
+    
+    <div style="float: right; margin: 15px 20px;">
+        <span style="color: #333; margin-right: 15px;">Welcome, <strong id="username"></strong></span>
+        <button onclick="logout()" style="background-color: #e74c3c; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer;">Logout</button>
+    </div>
+    
+     <h1  style="color: black;"><a href="index.html" style="color: black;">HOME</a> <a href="shares.html" style="color: black;">SHARES</a> <a href="loan.html"style="color: black;">LOANS</a> <a href="JOIN.html" style="color: black;">JOIN</a></h1>
+    <div class="container">
+        <h1>Member Registration</h1>
+        <div class="success-message" id="successMessage">
+            ✓ Form submitted successfully! Information sent to email.
+        </div>
+        
+        <form id="memberForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="fullName">Full Names *</label>
+                <input type="text" id="fullName" name="fullName" required>
+                <div class="error" id="fullNameError">Please enter your full name</div>
+            </div>
+
+            <div class="form-group">
+                <label for="mobileNumber">Mobile Number *</label>
+                <input type="tel" id="mobileNumber" name="mobileNumber" placeholder="e.g., 0712345678" maxlength="10" required>
+                <div class="error" id="mobileError">Mobile number must be exactly 10 digits</div>
+            </div>
+
+            <div class="form-group">
+                <label for="idNumber">ID Number*</label>
+                <input type="text" id="idNumber" name="idNumber" placeholder="e.g., 12345678" required>
+                <div class="error" id="idError">ID number must contain only digits</div>
+            </div>
+
+            <div class="form-group">
+                <label for="county">County *</label>
+                <input type="text" id="county" name="county" required>
+                <div class="error" id="countyError">Please enter county name</div>
+            </div>
+
+            <div class="form-group">
+                <label for="subCounty">Sub County *</label>
+                <input type="text" id="subCounty" name="subCounty" required>
+                <div class="error" id="subCountyError">Please enter sub county name</div>
+            </div>
+
+            <div class="form-group">
+                <label for="area">Area *</label>
+                <input type="text" id="area" name="area" required>
+                <div class="error" id="areaError">Please enter area name</div>
+            </div>
+
+            <div class="form-group">
+                <label for="groupName">Name of Group *</label>
+                <input type="text" id="groupName" name="groupName" required>
+                <div class="error" id="groupNameError">Please enter group name</div>
+            </div>
+
+            <div class="loading" id="loading">Sending...</div>
+
+            <div class="button-group">
+                <button type="submit" class="submit-btn" id="submitBtn">REGISTER</button>
+                <button type="button" class="reset-btn" onclick="resetForm()">RESET</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const EMAIL_SERVICE_URL = "https://formspree.io/f/xyzqpqgk"; // Will be configured for your email
+
+        function validateForm() {
+            let isValid = true;
+
+            // Clear all errors
+            document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+
+            // Validate Full Name
+            const fullName = document.getElementById('fullName').value.trim();
+            if (fullName === '') {
+                document.getElementById('fullNameError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate Mobile Number (must be exactly 10 digits)
+            const mobileNumber = document.getElementById('mobileNumber').value.trim();
+            if (!/^\d{10}$/.test(mobileNumber)) {
+                document.getElementById('mobileError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate ID Number (digits only)
+            const idNumber = document.getElementById('idNumber').value.trim();
+            if (!/^\d+$/.test(idNumber)) {
+                document.getElementById('idError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate County
+            const county = document.getElementById('county').value.trim();
+            if (county === '') {
+                document.getElementById('countyError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate Sub County
+            const subCounty = document.getElementById('subCounty').value.trim();
+            if (subCounty === '') {
+                document.getElementById('subCountyError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate Area
+            const area = document.getElementById('area').value.trim();
+            if (area === '') {
+                document.getElementById('areaError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate Group Name
+            const groupName = document.getElementById('groupName').value.trim();
+            if (groupName === '') {
+                document.getElementById('groupNameError').style.display = 'block';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+
+            // Prepare form data
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                mobileNumber: document.getElementById('mobileNumber').value,
+                idNumber: document.getElementById('idNumber').value,
+                county: document.getElementById('county').value,
+                subCounty: document.getElementById('subCounty').value,
+                area: document.getElementById('area').value,
+                groupName: document.getElementById('groupName').value,
+                _subject: 'New Member Registration - LUMWOD',
+                _captcha: 'false'
+            };
+
+            // Send email using Formspree
+            fetch('https://formspree.io/f/xyzqpqgk', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    email: 'lum10.20.30.40.wod@gmail.com'
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // Reset form
+                    document.getElementById('memberForm').reset();
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 3000);
+                } else {
+                    alert('There was an error sending your information. Please try again.');
+                }
+            })
+            .catch(error => {
+                alert('Error sending form. Please check your connection and try again.');
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            });
+        }
+
+        function resetForm() {
+            document.getElementById('memberForm').reset();
+            document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Real-time validation for mobile number
+        document.getElementById('mobileNumber').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+        });
+
+        // Real-time validation for ID number
+        document.getElementById('idNumber').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // Display logged-in username
+        const username = sessionStorage.getItem('username');
+        if (username) {
+            document.getElementById('username').textContent = username.charAt(0).toUpperCase() + username.slice(1);
+        }
+    </script>
+</body>
+</html>

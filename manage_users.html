@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .user-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .back-btn, .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover, .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .access-denied {
+            text-align: center;
+            padding: 60px 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .access-denied h1 {
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            background-color: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            font-size: 14px;
+        }
+
+        .search-bar button {
+            background-color: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .search-bar button:hover {
+            background-color: #5568d3;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background-color: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .action-btn {
+            background-color: #27ae60;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .action-btn:hover {
+            background-color: #229954;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            margin-left: 5px;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            justify-content: flex-end;
+        }
+
+        .save-btn {
+            background-color: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .save-btn:hover {
+            background-color: #229954;
+        }
+
+        .cancel-btn {
+            background-color: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cancel-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+        .read-only {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        /* Tabs for detailed view */
+        .detail-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .detail-tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .detail-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .detail-tab:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .detail-table thead {
+            background-color: #f0f0f0;
+        }
+
+        .detail-table th {
+            background-color: #667eea;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .detail-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 13px;
+        }
+
+        .detail-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .detail-table .amount {
+            text-align: right;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .add-record-btn {
+            background-color: #27ae60;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .add-record-btn:hover {
+            background-color: #229954;
+        }
+
+        .delete-record-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .delete-record-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👥 User Management</h1>
+            <div class="user-controls">
+                <a href="admin.html" class="back-btn">← Back to Admin</a>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="content" id="mainContent">
+            <div id="accessDenied" class="access-denied" style="display: none;">
+                <h1>Access Denied</h1>
+                <p>You do not have permission to access this page. Only administrators can manage users.</p>
+                <a href="index.html" class="back-link">Go Back to Home</a>
+            </div>
+
+            <div id="userPanel" style="display: none;">
+                <div id="message" class="message"></div>
+
+                <div class="user-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalShares">0</div>
+                        <div class="stat-label">Total Shares</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalLoans">0</div>
+                        <div class="stat-label">Total Loans</div>
+                    </div>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search by name, phone, or ID number...">
+                    <button onclick="searchUsers()">Search</button>
+                    <button onclick="resetSearch()" style="background-color: #95a5a6;">Reset</button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Phone Number</th>
+                                <th>ID Number</th>
+                                <th>Shares (KSH)</th>
+                                <th>Loans (KSH)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="noData" class="no-data" style="display: none;">
+                    <p>No users found. Start by adding the first user.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal with Shares & Loans Details -->
+    <div id="editModal" class="modal">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <div id="userDetailHeader">User Details - Shares & Loans Management</div>
+            </div>
+
+            <!-- User Summary -->
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="font-size: 12px; color: #666;">Full Name</label>
+                        <div style="font-size: 16px; font-weight: bold; color: #333;" id="summaryName">-</div>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: #666;">Phone Number</label>
+                        <div style="font-size: 14px; color: #333;" id="summaryPhone">-</div>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: #666;">ID Number</label>
+                        <div style="font-size: 14px; color: #333;" id="summaryID">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="detail-tabs">
+                <button class="detail-tab active" onclick="switchTab('basicInfo')">Basic Info</button>
+                <button class="detail-tab" onclick="switchTab('shares')">Shares</button>
+                <button class="detail-tab" onclick="switchTab('loans')">Loans</button>
+            </div>
+
+            <!-- Basic Info Tab -->
+            <div id="basicInfo" class="tab-content active">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone Number (10 digits)</label>
+                        <input type="tel" id="editPhone" placeholder="e.g., 0712345678" maxlength="10">
+                    </div>
+                    <div class="form-group">
+                        <label>ID Number</label>
+                        <input type="text" id="editIDNumber" placeholder="e.g., 12345678">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shares Tab -->
+            <div id="shares" class="tab-content">
+                <h3 style="margin-bottom: 15px;">Shares Details</h3>
+                <button class="add-record-btn" onclick="openAddShareModal()">+ Add Share Record</button>
+                <table class="detail-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th class="amount">Amount (KSH)</th>
+                            <th style="width: 80px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sharesTableBody">
+                    </tbody>
+                </table>
+                <div style="background: #f0f0f0; padding: 12px; border-radius: 5px; text-align: right;">
+                    <strong>Total Shares:</strong> <span id="totalSharesAmount" style="color: #667eea; font-size: 18px;">KSH 0</span>
+                </div>
+            </div>
+
+            <!-- Loans Tab -->
+            <div id="loans" class="tab-content">
+                <h3 style="margin-bottom: 15px;">Loans Details</h3>
+                <button class="add-record-btn" onclick="openAddLoanModal()">+ Add Loan Record</button>
+                <table class="detail-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Loan Amount (KSH)</th>
+                            <th>Amount Paid (KSH)</th>
+                            <th class="amount">Balance (KSH)</th>
+                            <th style="width: 80px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loansTableBody">
+                    </tbody>
+                </table>
+                <div style="background: #f0f0f0; padding: 12px; border-radius: 5px; text-align: right;">
+                    <strong>Total Loans:</strong> <span id="totalLoansAmount" style="color: #e74c3c; font-size: 18px;">KSH 0</span>
+                </div>
+            </div>
+
+            <div class="modal-buttons" style="margin-top: 30px;">
+                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+                <button class="save-btn" onclick="saveUserChanges()">Save All Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Share Record Modal -->
+    <div id="addShareModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add Share Record</div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="shareDate">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="shareDescription" placeholder="e.g., Monthly contribution">
+            </div>
+            <div class="form-group">
+                <label>Amount (KSH)</label>
+                <input type="number" id="shareAmount" placeholder="0" min="0">
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeAddShareModal()">Cancel</button>
+                <button class="save-btn" onclick="saveShareRecord()">Add Record</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Loan Record Modal -->
+    <div id="addLoanModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add Loan Record</div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="loanDate">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="loanDescription" placeholder="e.g., Emergency loan">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Loan Amount (KSH)</label>
+                    <input type="number" id="loanAmount" placeholder="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Amount Paid (KSH)</label>
+                    <input type="number" id="loanAmountPaid" placeholder="0" min="0">
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeAddLoanModal()">Cancel</button>
+                <button class="save-btn" onclick="saveLoanRecord()">Add Record</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample user database (in production, this would come from a server)
+        let users = [];
+
+        let currentEditingUser = null;
+        let filteredUsers = [...users];
+        let currentTab = 'basicInfo';
+
+        // Check if user is logged in and is admin
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const role = sessionStorage.getItem('role');
+
+            if (role !== 'admin') {
+                document.getElementById('accessDenied').style.display = 'block';
+                document.getElementById('userPanel').style.display = 'none';
+            } else {
+                document.getElementById('accessDenied').style.display = 'none';
+                document.getElementById('userPanel').style.display = 'block';
+                loadUsers();
+            }
+        });
+
+        function loadUsers() {
+            // Load registered users from localStorage (lumwod_users - from registration form)
+            const registeredUsers = localStorage.getItem('lumwod_users');
+            
+            if (registeredUsers) {
+                try {
+                    const registeredData = JSON.parse(registeredUsers);
+                    // Convert registered users object to array format
+                    users = Object.values(registeredData).map((user, index) => ({
+                        id: index + 1,
+                        fullName: user.fullname || user.fullName || '',
+                        phone: user.phone || '',
+                        idNumber: user.idnumber || user.idNumber || '',
+                        shares: user.shares || [],
+                        loans: user.loans || []
+                    }));
+                } catch (e) {
+                    console.log('Error loading registered users:', e);
+                    users = [];
+                }
+            }
+            
+            // Also check for users with shares/loans data in lumwodUsers
+            const savedUsers = localStorage.getItem('lumwodUsers');
+            if (savedUsers) {
+                try {
+                    const usersWithData = JSON.parse(savedUsers);
+                    // Merge: update existing users or add new ones
+                    usersWithData.forEach(userWithData => {
+                        const existingUserIndex = users.findIndex(u => u.idNumber === userWithData.idNumber);
+                        if (existingUserIndex >= 0) {
+                            users[existingUserIndex].shares = userWithData.shares || [];
+                            users[existingUserIndex].loans = userWithData.loans || [];
+                        } else {
+                            users.push({
+                                id: users.length + 1,
+                                fullName: userWithData.fullName,
+                                phone: userWithData.phone,
+                                idNumber: userWithData.idNumber,
+                                shares: userWithData.shares || [],
+                                loans: userWithData.loans || []
+                            });
+                        }
+                    });
+                } catch (e) {
+                    console.log('Error loading user data:', e);
+                }
+            }
+
+            filteredUsers = [...users];
+            displayUsers();
+            updateStats();
+        }
+
+        function displayUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            const noData = document.getElementById('noData');
+
+            if (filteredUsers.length === 0) {
+                tbody.innerHTML = '';
+                noData.style.display = 'block';
+                return;
+            }
+
+            noData.style.display = 'none';
+            tbody.innerHTML = filteredUsers.map(user => {
+                const totalShares = user.shares.reduce((sum, s) => sum + s.amount, 0);
+                const totalLoans = user.loans.reduce((sum, l) => sum + l.loanAmount, 0);
+                return `
+                <tr>
+                    <td>${user.fullName}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.idNumber}</td>
+                    <td>KSH ${formatNumber(totalShares)}</td>
+                    <td>KSH ${formatNumber(totalLoans)}</td>
+                    <td>
+                        <button class="action-btn" onclick="openEditModal(${user.id})">Edit My Details</button>
+                        <button class="action-btn delete-btn" onclick="deleteUser(${user.id})">Delete</button>
+                    </td>
+                </tr>
+            `;
+            }).join('');
+        }
+
+        function openEditModal(userId) {
+            currentEditingUser = users.find(u => u.id === userId);
+            if (!currentEditingUser) return;
+
+            // Initialize user detail header
+            document.getElementById('userDetailHeader').textContent = `Edit ${currentEditingUser.fullName} - Shares & Loans Management`;
+            
+            // Populate summary
+            document.getElementById('summaryName').textContent = currentEditingUser.fullName;
+            document.getElementById('summaryPhone').textContent = currentEditingUser.phone;
+            document.getElementById('summaryID').textContent = currentEditingUser.idNumber;
+
+            // Populate basic info
+            document.getElementById('editPhone').value = currentEditingUser.phone;
+            document.getElementById('editIDNumber').value = currentEditingUser.idNumber;
+
+            // Display shares and loans
+            displaySharesTable();
+            displayLoansTable();
+
+            // Reset to basic info tab
+            switchTab('basicInfo');
+
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.detail-tab').forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function displaySharesTable() {
+            const tbody = document.getElementById('sharesTableBody');
+            const shares = currentEditingUser.shares || [];
+
+            if (shares.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-message">No share records found</td></tr>';
+            } else {
+                tbody.innerHTML = shares.map((share, index) => `
+                    <tr>
+                        <td>${formatDate(share.date)}</td>
+                        <td>${share.description}</td>
+                        <td class="amount">KSH ${formatNumber(share.amount)}</td>
+                        <td><button class="delete-record-btn" onclick="deleteShareRecord(${index})">Delete</button></td>
+                    </tr>
+                `).join('');
+            }
+
+            const totalShares = shares.reduce((sum, s) => sum + s.amount, 0);
+            document.getElementById('totalSharesAmount').textContent = `KSH ${formatNumber(totalShares)}`;
+        }
+
+        function displayLoansTable() {
+            const tbody = document.getElementById('loansTableBody');
+            const loans = currentEditingUser.loans || [];
+
+            if (loans.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-message">No loan records found</td></tr>';
+            } else {
+                tbody.innerHTML = loans.map((loan, index) => {
+                    const balance = loan.loanAmount - loan.amountPaid;
+                    return `
+                    <tr>
+                        <td>${formatDate(loan.date)}</td>
+                        <td>${loan.description}</td>
+                        <td>KSH ${formatNumber(loan.loanAmount)}</td>
+                        <td>KSH ${formatNumber(loan.amountPaid)}</td>
+                        <td class="amount">KSH ${formatNumber(balance)}</td>
+                        <td><button class="delete-record-btn" onclick="deleteLoanRecord(${index})">Delete</button></td>
+                    </tr>
+                `;
+                }).join('');
+            }
+
+            const totalLoans = loans.reduce((sum, l) => sum + l.loanAmount, 0);
+            document.getElementById('totalLoansAmount').textContent = `KSH ${formatNumber(totalLoans)}`;
+        }
+
+        function openAddShareModal() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('shareDate').value = today;
+            document.getElementById('shareDescription').value = '';
+            document.getElementById('shareAmount').value = '';
+            document.getElementById('addShareModal').style.display = 'block';
+        }
+
+        function closeAddShareModal() {
+            document.getElementById('addShareModal').style.display = 'none';
+        }
+
+        function saveShareRecord() {
+            const date = document.getElementById('shareDate').value;
+            const description = document.getElementById('shareDescription').value.trim();
+            const amount = parseInt(document.getElementById('shareAmount').value) || 0;
+
+            if (!date) {
+                showMessage('Please enter a date', 'error');
+                return;
+            }
+
+            if (!description) {
+                showMessage('Please enter a description', 'error');
+                return;
+            }
+
+            if (amount <= 0) {
+                showMessage('Amount must be greater than 0', 'error');
+                return;
+            }
+
+            if (!currentEditingUser.shares) {
+                currentEditingUser.shares = [];
+            }
+
+            currentEditingUser.shares.push({ date, description, amount });
+            closeAddShareModal();
+            displaySharesTable();
+            showMessage('Share record added successfully!', 'success');
+        }
+
+        function deleteShareRecord(index) {
+            if (confirm('Are you sure you want to delete this share record?')) {
+                currentEditingUser.shares.splice(index, 1);
+                displaySharesTable();
+                showMessage('Share record deleted!', 'success');
+            }
+        }
+
+        function openAddLoanModal() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('loanDate').value = today;
+            document.getElementById('loanDescription').value = '';
+            document.getElementById('loanAmount').value = '';
+            document.getElementById('loanAmountPaid').value = '';
+            document.getElementById('addLoanModal').style.display = 'block';
+        }
+
+        function closeAddLoanModal() {
+            document.getElementById('addLoanModal').style.display = 'none';
+        }
+
+        function saveLoanRecord() {
+            const date = document.getElementById('loanDate').value;
+            const description = document.getElementById('loanDescription').value.trim();
+            const loanAmount = parseInt(document.getElementById('loanAmount').value) || 0;
+            const amountPaid = parseInt(document.getElementById('loanAmountPaid').value) || 0;
+
+            if (!date) {
+                showMessage('Please enter a date', 'error');
+                return;
+            }
+
+            if (!description) {
+                showMessage('Please enter a description', 'error');
+                return;
+            }
+
+            if (loanAmount <= 0) {
+                showMessage('Loan amount must be greater than 0', 'error');
+                return;
+            }
+
+            if (amountPaid < 0 || amountPaid > loanAmount) {
+                showMessage('Amount paid must be between 0 and loan amount', 'error');
+                return;
+            }
+
+            if (!currentEditingUser.loans) {
+                currentEditingUser.loans = [];
+            }
+
+            currentEditingUser.loans.push({ date, description, loanAmount, amountPaid });
+            closeAddLoanModal();
+            displayLoansTable();
+            showMessage('Loan record added successfully!', 'success');
+        }
+
+        function deleteLoanRecord(index) {
+            if (confirm('Are you sure you want to delete this loan record?')) {
+                currentEditingUser.loans.splice(index, 1);
+                displayLoansTable();
+                showMessage('Loan record deleted!', 'success');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+            currentEditingUser = null;
+        }
+
+        function saveUserChanges() {
+            if (!currentEditingUser) return;
+
+            const phone = document.getElementById('editPhone').value.trim();
+            const idNumber = document.getElementById('editIDNumber').value.trim();
+
+            // Validate phone number
+            if (!/^\d{10}$/.test(phone)) {
+                showMessage('Phone number must be exactly 10 digits', 'error');
+                return;
+            }
+
+            // Validate ID number
+            if (!/^\d+$/.test(idNumber)) {
+                showMessage('ID number must contain only digits', 'error');
+                return;
+            }
+
+            // Update user
+            currentEditingUser.phone = phone;
+            currentEditingUser.idNumber = idNumber;
+
+            // Save to localStorage
+            localStorage.setItem('lumwodUsers', JSON.stringify(users));
+
+            showMessage('User information and records updated successfully!', 'success');
+            closeModal();
+            displayUsers();
+            updateStats();
+        }
+
+        function deleteUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            if (confirm(`Are you sure you want to delete ${user.fullName}?`)) {
+                users = users.filter(u => u.id !== userId);
+                localStorage.setItem('lumwodUsers', JSON.stringify(users));
+                showMessage('User deleted successfully!', 'success');
+                filteredUsers = [...users];
+                displayUsers();
+                updateStats();
+            }
+        }
+
+        function searchUsers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            if (!searchTerm) {
+                filteredUsers = [...users];
+                displayUsers();
+                return;
+            }
+
+            filteredUsers = users.filter(user => 
+                user.fullName.toLowerCase().includes(searchTerm) ||
+                user.phone.includes(searchTerm) ||
+                user.idNumber.includes(searchTerm)
+            );
+
+            displayUsers();
+        }
+
+        function resetSearch() {
+            document.getElementById('searchInput').value = '';
+            filteredUsers = [...users];
+            displayUsers();
+        }
+
+        function updateStats() {
+            document.getElementById('totalUsers').textContent = users.length;
+            const totalShares = users.reduce((sum, user) => sum + (user.shares || []).reduce((s, share) => s + share.amount, 0), 0);
+            const totalLoans = users.reduce((sum, user) => sum + (user.loans || []).reduce((s, loan) => s + loan.loanAmount, 0), 0);
+            document.getElementById('totalShares').textContent = 'KSH ' + formatNumber(totalShares);
+            document.getElementById('totalLoans').textContent = 'KSH ' + formatNumber(totalLoans);
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message ' + type;
+            messageDiv.style.display = 'block';
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 4000);
+        }
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-US').format(num);
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('role');
+            sessionStorage.removeItem('idnumber');
+            sessionStorage.removeItem('currentUser');
+            sessionStorage.removeItem('loginTime');
+            window.location.href = 'login.html';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            const addShareModal = document.getElementById('addShareModal');
+            const addLoanModal = document.getElementById('addLoanModal');
+            
+            if (event.target == modal) {
+                closeModal();
+            }
+            if (event.target == addShareModal) {
+                closeAddShareModal();
+            }
+            if (event.target == addLoanModal) {
+                closeAddLoanModal();
+            }
+        }
+
+        // Real-time validation for phone number
+        document.addEventListener('DOMContentLoaded', () => {
+            const phoneInput = document.getElementById('editPhone');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '').slice(0, 10);
+                });
+            }
+
+            const idInput = document.getElementById('editIDNumber');
+            if (idInput) {
+                idInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

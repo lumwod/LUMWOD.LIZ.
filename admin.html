@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .user-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .admin-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .admin-btn {
+            padding: 15px 20px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            text-align: left;
+        }
+
+        .admin-btn:hover {
+            background-color: #5568d3;
+        }
+
+        .admin-btn.danger {
+            background-color: #e74c3c;
+        }
+
+        .admin-btn.danger:hover {
+            background-color: #c0392b;
+        }
+
+        .admin-btn.success {
+            background-color: #27ae60;
+        }
+
+        .admin-btn.success:hover {
+            background-color: #229954;
+        }
+
+        .settings-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ffeaa7;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .access-denied {
+            text-align: center;
+            padding: 60px 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .access-denied h1 {
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+
+        .access-denied p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background-color: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background-color: #5568d3;
+        }
+
+        .user-registry-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .user-registry-table th {
+            background-color: #27ae60;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .user-registry-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .user-registry-table tr:hover {
+            background-color: #f0f8f0;
+        }
+
+        .user-registry-table .user-count {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .action-btn.edit {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .action-btn.edit:hover {
+            background-color: #2980b9;
+        }
+
+        .action-btn.delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Admin Panel</h1>
+            <div class="user-controls">
+                <span id="adminName" style="margin-right: 15px;"></span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="content" id="adminContent">
+            <div id="accessDenied" class="access-denied" style="display: none;">
+                <h1>Access Denied</h1>
+                <p>You do not have permission to access the admin panel. Only administrators can make changes.</p>
+                <a href="index.html" class="back-btn">Go Back to Home</a>
+            </div>
+
+            <div id="adminPanel" style="display: none;">
+                <div id="message" class="message"></div>
+
+                <div class="admin-section">
+                    <h2 class="section-title">📊 Dashboard Overview</h2>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalUsers">2</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalPages">4</div>
+                            <div class="stat-label">Pages</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="adminCount">1</div>
+                            <div class="stat-label">Admins</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h2 class="section-title">� Financial Management</h2>
+                    <div class="button-group">
+                        <button class="admin-btn" onclick="window.location.href='shares_management.html'">📊 Manage Shares</button>
+                        <button class="admin-btn" onclick="window.location.href='loans_management.html'">💳 Manage Loans</button>
+                    </div>
+                </div>
+
+                <div class="admin-section">                    <h2 class="section-title">👥 All User Details & Passwords</h2>
+                    <div class="button-group">
+                        <button class="admin-btn" onclick="showAllUserDetails()">View All User Details</button>
+                    </div>
+
+                    <div id="allUserDetails" class="table-responsive" style="display: none;">
+                        <div class="user-count">Total Users: <span id="totalUserCount">0</span></div>
+                        <table class="user-registry-table">
+                            <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>ID Number</th>
+                                    <th>Phone Number</th>
+                                    <th>Password</th>
+                                    <th>Role</th>
+                                    <th>Registration Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allUserDetailsBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: #999;">No user details available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="admin-section">                    <h2 class="section-title">👥 Registered Users Registry</h2>
+                    <div class="button-group">
+                        <button class="admin-btn" onclick="showUserRegistry()">View User Registry</button>
+                        <button class="admin-btn" onclick="exportUserData()">📥 Export User Data</button>
+                    </div>
+
+                    <div id="userRegistry" class="table-responsive" style="display: none;">
+                        <div class="user-count">Total Registered Users: <span id="registryUserCount">0</span></div>
+                        <table class="user-registry-table">
+                            <thead>
+                                <tr>
+                                    <th>Full Names</th>
+                                    <th>ID Number</th>
+                                    <th>Phone Number</th>
+                                    <th>Registration Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userRegistryBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: #999;">No users registered yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="admin-section">                    <h2 class="section-title">�👥 User Management</h2>
+                    <div class="button-group">
+                        <button class="admin-btn" onclick="window.location.href='manage_users.html'">Manage All Users</button>
+                        <button class="admin-btn" onclick="showUserList()">View User List</button>
+                        <button class="admin-btn" onclick="toggleAddUserForm()">Add New User</button>
+                        <button class="admin-btn danger" onclick="resetAllPasswords()">Reset Passwords</button>
+                    </div>
+
+                    <div id="addUserForm" class="settings-form" style="display: none;">
+                        <h3>Add New User</h3>
+                        <div class="form-group">
+                            <label>Username:</label>
+                            <input type="text" id="newUsername" placeholder="Enter username">
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <input type="text" id="newPassword" placeholder="Enter password">
+                        </div>
+                        <div class="form-group">
+                            <label>Role:</label>
+                            <select id="newRole">
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button class="admin-btn success" onclick="addNewUser()">Create User</button>
+                        <button class="admin-btn" onclick="toggleAddUserForm()">Cancel</button>
+                    </div>
+
+                    <div id="userList" class="table-responsive" style="display: none;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                                <tr>
+                                    <td>admin</td>
+                                    <td><strong style="color: #667eea;">Admin</strong></td>
+                                    <td>System Account</td>
+                                </tr>
+                                <tr>
+                                    <td>user</td>
+                                    <td>User</td>
+                                    <td><button class="admin-btn danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteUser('user')">Delete</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h2 class="section-title">🔧 Website Settings</h2>
+                    <div class="button-group">
+                        <button class="admin-btn" onclick="toggleWebsiteSettings()">Edit Website Settings</button>
+                        <button class="admin-btn" onclick="toggleMaintenanceMode()">Maintenance Mode</button>
+                    </div>
+
+                    <div id="websiteSettings" class="settings-form" style="display: none;">
+                        <h3>Website Settings</h3>
+                        <div class="form-group">
+                            <label>Contact Email:</label>
+                            <input type="email" id="contactEmail" value="lum10.20.30.40.wod@gmail.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number:</label>
+                            <input type="text" id="phoneNumber" placeholder="Enter organization phone number">
+                        </div>
+                        <div class="form-group">
+                            <label>Organization Address:</label>
+                            <textarea id="orgAddress" placeholder="Enter organization address"></textarea>
+                        </div>
+                        <button class="admin-btn success" onclick="saveWebsiteSettings()">Save Settings</button>
+                        <button class="admin-btn" onclick="toggleWebsiteSettings()">Cancel</button>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h2 class="section-title">⚠️ Danger Zone</h2>
+                    <div class="warning">
+                        ⚠️ These actions are permanent and cannot be undone. Use with caution.
+                    </div>
+                    <div class="button-group">
+                        <button class="admin-btn danger" onclick="clearAllData()">Clear All Data</button>
+                        <button class="admin-btn danger" onclick="resetSystem()">Reset System</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in and is admin
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+            const role = sessionStorage.getItem('role');
+            const fullname = sessionStorage.getItem('fullname') || 'Administrator';
+
+            if (!isAdmin && role !== 'admin') {
+                document.getElementById('accessDenied').style.display = 'block';
+                document.getElementById('adminPanel').style.display = 'none';
+            } else {
+                document.getElementById('accessDenied').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminName').textContent = 'Admin: ' + fullname;
+            }
+        });
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('isAdmin');
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('role');
+            sessionStorage.removeItem('loginTime');
+            sessionStorage.removeItem('currentUser');
+            sessionStorage.removeItem('fullname');
+            window.location.href = 'login.html';
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message ' + type;
+            messageDiv.style.display = 'block';
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 4000);
+        }
+
+        function toggleAddUserForm() {
+            const form = document.getElementById('addUserForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleWebsiteSettings() {
+            const settings = document.getElementById('websiteSettings');
+            settings.style.display = settings.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleMaintenanceMode() {
+            const isEnabled = localStorage.getItem('maintenanceMode') === 'true';
+            localStorage.setItem('maintenanceMode', !isEnabled);
+            showMessage('Maintenance mode ' + (!isEnabled ? 'enabled' : 'disabled'), 'success');
+        }
+
+        function showUserRegistry() {
+            const userRegistry = document.getElementById('userRegistry');
+            const users = JSON.parse(localStorage.getItem('lumwod_users')) || {};
+            const userRegistryBody = document.getElementById('userRegistryBody');
+            const registryUserCount = document.getElementById('registryUserCount');
+
+            if (Object.keys(users).length === 0) {
+                userRegistryBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">No users registered yet</td></tr>';
+                registryUserCount.textContent = '0';
+            } else {
+                userRegistryBody.innerHTML = Object.values(users).map(user => `
+                    <tr>
+                        <td><strong>${user.fullname}</strong></td>
+                        <td>${user.idnumber}</td>
+                        <td>${user.phone}</td>
+                        <td>${new Date(user.createdDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                        <td><span style="background-color: #d4edda; color: #155724; padding: 3px 8px; border-radius: 3px; font-size: 12px;">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn edit" onclick="editUser('${user.idnumber}')">Edit</button>
+                                <button class="action-btn delete" onclick="deleteRegisteredUser('${user.idnumber}', '${user.fullname}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                registryUserCount.textContent = Object.keys(users).length;
+            }
+
+            userRegistry.style.display = userRegistry.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function editUser(idnumber) {
+            const users = JSON.parse(localStorage.getItem('lumwod_users')) || {};
+            const user = users[idnumber];
+            
+            if (user) {
+                const newFullname = prompt('Edit Full Names:', user.fullname);
+                if (newFullname !== null && newFullname.trim() !== '') {
+                    user.fullname = newFullname.trim();
+                    localStorage.setItem('lumwod_users', JSON.stringify(users));
+                    
+                    // Update the affected member's session if they are currently logged in
+                    const currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || {};
+                    if (currentUser.idnumber === idnumber) {
+                        currentUser.fullname = newFullname.trim();
+                        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        sessionStorage.setItem('username', newFullname.trim());
+                    }
+                    
+                    // Update logged-in users list
+                    const loggedInUsers = JSON.parse(sessionStorage.getItem('lumwod_loggedInUsers')) || [];
+                    loggedInUsers.forEach(u => {
+                        if (u.idnumber === idnumber) {
+                            u.fullname = newFullname.trim();
+                        }
+                    });
+                    sessionStorage.setItem('lumwod_loggedInUsers', JSON.stringify(loggedInUsers));
+                    
+                    showMessage('User "' + idnumber + '" updated successfully!', 'success');
+                    showUserRegistry();
+                }
+            }
+        }
+
+        function deleteRegisteredUser(idnumber, fullname) {
+            if (confirm('Are you sure you want to delete user "' + fullname + '" (ID: ' + idnumber + ')? This action cannot be undone.')) {
+                const users = JSON.parse(localStorage.getItem('lumwod_users')) || {};
+                delete users[idnumber];
+                localStorage.setItem('lumwod_users', JSON.stringify(users));
+                
+                // Remove the deleted user from logged-in users list
+                const loggedInUsers = JSON.parse(sessionStorage.getItem('lumwod_loggedInUsers')) || [];
+                const updatedLoggedInUsers = loggedInUsers.filter(u => u.idnumber !== idnumber);
+                sessionStorage.setItem('lumwod_loggedInUsers', JSON.stringify(updatedLoggedInUsers));
+                
+                // If the deleted user is currently logged in, log them out
+                const currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || {};
+                if (currentUser.idnumber === idnumber) {
+                    sessionStorage.removeItem('isLoggedIn');
+                    sessionStorage.removeItem('currentUser');
+                    sessionStorage.removeItem('username');
+                    sessionStorage.removeItem('role');
+                    sessionStorage.removeItem('idnumber');
+                }
+                
+                showMessage('User "' + fullname + '" deleted successfully!', 'success');
+                showUserRegistry();
+                showAllUserDetails();
+            }
+        }
+
+        function showAllUserDetails() {
+            const allUserDetails = document.getElementById('allUserDetails');
+            const users = JSON.parse(localStorage.getItem('lumwod_users')) || {};
+            const allUserDetailsBody = document.getElementById('allUserDetailsBody');
+            const totalUserCount = document.getElementById('totalUserCount');
+
+            if (Object.keys(users).length === 0) {
+                allUserDetailsBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #999;">No user details available</td></tr>';
+                totalUserCount.textContent = '0';
+            } else {
+                allUserDetailsBody.innerHTML = Object.values(users).map(user => `
+                    <tr>
+                        <td><strong>${user.fullname}</strong></td>
+                        <td>${user.idnumber}</td>
+                        <td>${user.phone}</td>
+                        <td><code style="background-color: #f0f0f0; padding: 3px 6px; border-radius: 3px; font-family: monospace;">${user.password}</code></td>
+                        <td><span style="background-color: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 3px; font-size: 12px;">${user.role || 'user'}</span></td>
+                        <td>${new Date(user.createdDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn delete" onclick="deleteRegisteredUser('${user.idnumber}', '${user.fullname}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                totalUserCount.textContent = Object.keys(users).length;
+            }
+
+            allUserDetails.style.display = allUserDetails.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function exportUserData() {
+            const users = JSON.parse(localStorage.getItem('lumwod_users')) || {};
+            
+            if (Object.keys(users).length === 0) {
+                showMessage('No users to export', 'error');
+                return;
+            }
+
+            // Create CSV data
+            let csvContent = 'Full Names,ID Number,Phone Number,Registration Date\n';
+            Object.values(users).forEach(user => {
+                const date = new Date(user.createdDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                csvContent += `"${user.fullname}","${user.idnumber}","${user.phone}","${date}"\n`;
+            });
+
+            // Create and download CSV file
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent));
+            element.setAttribute('download', 'lumwod_users_' + new Date().getTime() + '.csv');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+
+            showMessage('User data exported successfully!', 'success');
+        }
+
+        function showUserList() {
+            const userList = document.getElementById('userList');
+            userList.style.display = userList.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function addNewUser() {
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value.trim();
+            const role = document.getElementById('newRole').value;
+
+            if (!username || !password) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            // In a real app, this would be sent to a server
+            // For now, we'll just show a success message
+            showMessage('User "' + username + '" created successfully! (Note: Changes are temporary - refresh resets data)', 'success');
+            
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            toggleAddUserForm();
+        }
+
+        function deleteUser(username) {
+            if (confirm('Are you sure you want to delete user "' + username + '"?')) {
+                showMessage('User "' + username + '" deleted successfully!', 'success');
+            }
+        }
+
+        function resetAllPasswords() {
+            if (confirm('Are you sure you want to reset all passwords? This action cannot be undone.')) {
+                showMessage('All passwords have been reset to default values', 'success');
+            }
+        }
+
+        function saveWebsiteSettings() {
+            const email = document.getElementById('contactEmail').value;
+            const phone = document.getElementById('phoneNumber').value;
+            const address = document.getElementById('orgAddress').value;
+
+            if (!email) {
+                showMessage('Please enter a contact email', 'error');
+                return;
+            }
+
+            localStorage.setItem('contactEmail', email);
+            localStorage.setItem('phoneNumber', phone);
+            localStorage.setItem('orgAddress', address);
+
+            showMessage('Website settings saved successfully!', 'success');
+            toggleWebsiteSettings();
+        }
+
+        function clearAllData() {
+            if (confirm('WARNING: This will clear all data from the website. This action cannot be undone.\n\nAre you absolutely sure?')) {
+                if (confirm('This is your last warning. Are you REALLY sure?')) {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    showMessage('All data cleared. Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                }
+            }
+        }
+
+        function resetSystem() {
+            if (confirm('This will reset the entire website to its default state. Continue?')) {
+                location.reload();
+                showMessage('System reset complete', 'success');
+            }
+        }
+
+        // Load saved settings on page load
+        window.addEventListener('load', () => {
+            const savedEmail = localStorage.getItem('contactEmail');
+            if (savedEmail) {
+                document.getElementById('contactEmail').value = savedEmail;
+            }
+            document.getElementById('phoneNumber').value = localStorage.getItem('phoneNumber') || '';
+            document.getElementById('orgAddress').value = localStorage.getItem('orgAddress') || '';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOME</title>
+    <style>
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        .admin-link {
+            background-color: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            text-decoration: none;
+            display: none;
+            margin-left: 5px;
+        }
+        .admin-link:hover {
+            background-color: #5568d3;
+        }
+        .user-info {
+            float: right;
+            color: black;
+            margin-top: 15px;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body background="background.png">
+    <script>
+        // Check if user is logged in
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('role');
+            sessionStorage.removeItem('idnumber');
+            sessionStorage.removeItem('currentUser');
+            sessionStorage.removeItem('loginTime');
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <div class="user-info">
+        <span>Welcome, <strong id="username"></strong></span>
+        <a href="admin.html" class="admin-link" id="adminLink">🔐 Admin Panel</a>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <h1  style="color: black;"><a href="index.html" style="color: black;">HOME</a> <a href="shares.html" style="color: black;">SHARES</a> <a href="loan.html"style="color: black;">LOANS</a> <a href="JOIN.html" style="color: black;">JOIN</a> <a href="admin.html"></a> ADMIN</h1> 
+     <br>
+     <h1>LUMWOD</h1>
+    <hr>
+    <p>LUMWOD (United Men and Women Organization Development Programme) is a community-based company created to improve the lives of its members through financial empowerment and cooperative development. It focuses on uplifting individuals and families by offering practical financial solutions, resources, and guidance that help members achieve stability and growth.
+
+LUMWOD provides funds in four main forms, ensuring that every member has access to support. These include short-term financial assistance for urgent needs, long-term development funds for projects and business expansion, emergency support funds for unexpected challenges, and group investment funds where pooled resources are used to generate income for the benefit of all members. These funding options create a strong financial foundation and make credit easily accessible.
+
+The company also offers a safe saving zone, giving members a secure place to save money, build financial discipline, and access their savings when needed. This system encourages responsible money management and helps members accumulate wealth over time.
+
+LUMWOD further promotes economic empowerment through table banking, where members contribute to a central pool and borrow directly from it at low interest. This strengthens trust and cooperation within the group.</p>
+    
+    
+    <hr>
+    <h1>HOUSEHOLDS</h1>
+    <P>Lumwod is committed to improving the living standards of its members by providing well-structured households equipped with essential amenities. The homes offered are designed to meet both comfort and practicality, ensuring that families have access to a safe and functional living environment. Each household comes with a reliable water storage system, including tanks and pipes, to guarantee a steady supply of clean water for daily use. Additionally, the houses are fitted with basic utilities such as electricity connections and telecommunication facilities, including phones, which allow residents to stay connected.
+
+    To support sustainable living, Lumwod also provides materials for everyday domestic tasks. Members often receive jericans for water storage, fertilizers for home gardening, and other household necessities that promote self-sufficiency. The homes are built using durable construction materials, ensuring longevity and minimal maintenance.</p>
+    <img src="fertilizer b.png" alt="fertilizer b" height="300">
+    <img src="fertilizer.png" alt="fertilizer"height="300">
+    <img src="" alt="" height="300">
+    <img src="pipes.png" alt=" pipes" height="290">
+    <img src="mtungi.png" alt="mtungi" height="290">
+    <img src="water tank a.png" alt="" height="300">
+    <img src="water tank b.png" alt="" height="250">
+    <p>Lumwod focuses not only on the physical structure of the households but also on enhancing the quality of life for its members by integrating essential tools and resources that facilitate daily living. Through these comprehensive provisions, Lumwod ensures that its members have access to safe, functional, and well-equipped homes that foster comfort, productivity, and community wellbeing.</p>
+    <br>
+    <br>
+    <br>
+    <h1>FOOD PRODUCTS</h1>
+    <p>LUMWOD supports its members by supplying essential foodstuffs that help reduce household expenses and promote food security. The organization distributes a variety of items including flour, salad oil, rice, sugar, vegetables, milk, and indomie. These products are offered at affordable prices or through member support programs, ensuring that every household can access basic necessities without financial strain.
+
+       LUMWOD buys these food items in bulk directly from suppliers, which lowers the overall cost. The savings gained from bulk purchasing are passed on to members, making the products cheaper than in ordinary shops. Members can receive the foodstuffs through organized distribution days, group contributions, or as part of the benefits linked to their savings and participation in the company.
+
+     Additionally, LUMWOD ensures consistency and quality by working with trusted suppliers. This system strengthens food availability, supports healthy families, and reinforces the company’s commitment to improving members’ daily lives.</p>
+     <img src="mtungi salad.png" alt="" title="20L Salad oil" height="300">
+     <img src="5L salad.png" alt="" title="5L Salad oil" height="250">
+     <img src="10 kg rice.png" alt="" title="10kg rice" height="250">
+     <img src="daawat rice.png" alt="" title="daawat" height="250">
+     <img src="kabeas sugar 2.png" alt="" title="kabras sugar" height="250">
+     <img src="kabras sugar 1.png" alt="kabras sugar" title="kabras sugar" height="250">
+     <img src="raha chapati.png" alt="" title="raha baking flour" height="250">
+     <img src="raha ugali.png" alt="" title=" maize flour" height="250">
+      <h1  style="color: black;"><a href="index.html" style="color: black;">HOME</a> <a href="shares.html" style="color: black;">SHARES</a> <a href="loan.html"style="color: black;">LOANS</a> <a href="JOIN.html" style="color: black;">JOIN</a></h1> 
+     
+    <script>
+        // Display logged-in username
+        const username = sessionStorage.getItem('username');
+        const role = sessionStorage.getItem('role');
+        if (username) {
+            document.getElementById('username').textContent = username.charAt(0).toUpperCase() + username.slice(1);
+        }
+        // Show admin panel link only for admins
+        if (role === 'admin') {
+            document.getElementById('adminLink').style.display = 'inline-block';
+        }
+    </script>
+</body>
+</html>

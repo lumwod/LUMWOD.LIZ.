@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUMWOD Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message {
+            display: none;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #5568d3;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin-top: 10px;
+        }
+
+        .logged-in-users {
+            background-color: #e8f5e9;
+            border: 2px solid #4caf50;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .logged-in-users h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .user-item {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #4caf50;
+        }
+
+        .user-info {
+            font-size: 13px;
+            color: #333;
+        }
+
+        .user-info .name {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .user-info .details {
+            font-size: 11px;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        .switch-btn, .logout-btn {
+            padding: 5px 10px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .switch-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .switch-btn:hover {
+            background-color: #0b7dda;
+        }
+
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background-color: #da190b;
+        }
+
+        .success-message {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #c3e6cb;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            font-size: 14px;
+            color: #999;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 10px;
+            position: relative;
+            color: #666;
+        }
+
+        .admin-login-section {
+            background-color: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+        }
+
+        .admin-login-section h3 {
+            color: #ff9800;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        #adminForm .form-group {
+            margin-bottom: 15px;
+        }
+
+        #adminForm input[type="text"],
+        #adminForm input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ffe0b2;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        #adminForm input[type="text"]:focus,
+        #adminForm input[type="password"]:focus {
+            outline: none;
+            border-color: #ff9800;
+        }
+
+        #adminLoginBtn {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #adminLoginBtn:hover {
+            background-color: #f57c00;
+        }
+
+        #adminLoginBtn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .admin-loading {
+            display: none;
+            text-align: center;
+            color: #ff9800;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .forgot-password-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .forgot-password-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .forgot-password-link a:hover {
+            text-decoration: underline;
+        }
+
+        .admin-button-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .admin-button-link button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .admin-button-link button:hover {
+            background-color: #f57c00;
+        }
+
+        .admin-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .admin-modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-modal-content h2 {
+            color: #ff9800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .admin-modal-content .form-group {
+            margin-bottom: 15px;
+        }
+
+        .admin-modal-content input[type="text"],
+        .admin-modal-content input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .admin-modal-content input[type="text"]:focus,
+        .admin-modal-content input[type="password"]:focus {
+            outline: none;
+            border-color: #ff9800;
+        }
+
+        .admin-modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .admin-modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .admin-modal-buttons .submit-btn {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .admin-modal-buttons .submit-btn:hover {
+            background-color: #f57c00;
+        }
+
+        .admin-modal-buttons .cancel-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .admin-modal-buttons .cancel-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+        .admin-error-message {
+            display: none;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .forgot-password-section {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+            display: none;
+        }
+
+        .forgot-password-section.show {
+            display: block;
+        }
+
+        .forgot-password-section h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        #forgotForm .form-group {
+            margin-bottom: 15px;
+        }
+
+        #forgotForm input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #bbdefb;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        #forgotForm input[type="text"]:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        #forgotSubmitBtn {
+            width: 100%;
+            padding: 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #forgotSubmitBtn:hover {
+            background-color: #1976d2;
+        }
+
+        .password-result {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+            border-left: 4px solid #4caf50;
+        }
+
+        .password-result.show {
+            display: block;
+        }
+
+        .password-result-content {
+            margin-top: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 3px;
+        }
+
+        .password-display {
+            font-family: monospace;
+            background-color: #f0f0f0;
+            padding: 8px;
+            border-radius: 3px;
+            word-break: break-all;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .existing-account-section {
+            background-color: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            display: none;
+            text-align: center;
+        }
+
+        .existing-account-section.show {
+            display: block;
+        }
+
+        .existing-account-section h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .existing-account-section p {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .existing-login-btn {
+            background-color: #ffc107;
+            color: #333;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .existing-login-btn:hover {
+            background-color: #e0a800;
+        }
+
+        #quickLoginForm {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        #quickLoginForm.show {
+            display: block;
+        }
+
+        #quickLoginForm .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        #quickLoginForm input[type="text"],
+        #quickLoginForm input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #80d4ff;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        #quickLoginForm input[type="text"]:focus,
+        #quickLoginForm input[type="password"]:focus {
+            outline: none;
+            border-color: #0099cc;
+        }
+
+        .quick-login-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .quick-login-btn {
+            flex: 1;
+            padding: 10px;
+            background-color: #0099cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .quick-login-btn:hover {
+            background-color: #007399;
+        }
+
+        .quick-cancel-btn {
+            flex: 1;
+            padding: 10px;
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .quick-cancel-btn:hover {
+            background-color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>LUMWOD</h1>
+            <p>Member Portal</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <div class="logged-in-users" id="loggedInUsersDiv">
+            <h3>Currently Logged In Users:</h3>
+            <div id="usersList"></div>
+        </div>
+
+        <div class="existing-account-section" id="existingAccountSection">
+            <h3>⚠️ Account Already Exists</h3>
+            <p id="existingAccountMessage">It seems you already have an account, please log in</p>
+            <button class="existing-login-btn" onclick="toggleQuickLogin()">Login with ID & Password</button>
+
+            <form id="quickLoginForm" onsubmit="handleQuickLogin(event)">
+                <div class="form-group">
+                    <label for="quickID">ID Number</label>
+                    <input type="text" id="quickID" name="quickID" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="quickPassword">Password</label>
+                    <input type="password" id="quickPassword" name="quickPassword" required>
+                </div>
+
+                <div class="quick-login-buttons">
+                    <button type="submit" class="quick-login-btn">Login</button>
+                    <button type="button" class="quick-cancel-btn" onclick="toggleQuickLogin()">Cancel</button>
+                </div>
+
+                <div class="error-message" id="quickErrorMessage" style="margin-top: 15px;"></div>
+            </form>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="fullname">Full Names</label>
+                <input type="text" id="fullname" name="fullname" required autofocus>
+                <div class="error" id="fullnameError">Please enter your full names</div>
+            </div>
+
+            <div class="form-group">
+                <label for="idnumber">ID Number</label>
+                <input type="text" id="idnumber" name="idnumber" required>
+                <div class="error" id="idnumberError">Please enter your ID number</div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required>
+                <div class="error" id="phoneError">Please enter your phone number</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <div class="error" id="passwordError">Please enter password</div>
+            </div>
+
+            <div class="loading" id="loading">Logging in...</div>
+
+            <button type="submit" id="loginBtn">Sign In</button>
+        </form>
+
+        <div class="forgot-password-link">
+            <a onclick="toggleForgotPassword()">🔑 Forgot Password?</a>
+        </div>
+
+        <div class="forgot-password-section" id="forgotPasswordSection">
+            <h3>🔑 Recover Your Password</h3>
+            <form id="forgotForm" onsubmit="handleForgotPassword(event)">
+                <div class="form-group">
+                    <label for="forgotFullname">Full Names</label>
+                    <input type="text" id="forgotFullname" name="forgotFullname" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="forgotID">ID Number</label>
+                    <input type="text" id="forgotID" name="forgotID" required>
+                </div>
+
+                <button type="submit" id="forgotSubmitBtn">Recover Password</button>
+                <button type="button" id="forgotCancelBtn" onclick="toggleForgotPassword()" style="width: 100%; padding: 10px; background-color: #95a5a6; color: white; border: none; border-radius: 4px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px;">Cancel</button>
+            </form>
+
+            <div class="password-result" id="passwordResult">
+                <strong>✅ Password Found!</strong>
+                <div class="password-result-content">
+                    <strong>Your Password:</strong><br>
+                    <div class="password-display" id="passwordDisplay">-</div>
+                </div>
+            </div>
+
+            <div class="error-message" id="forgotErrorMessage" style="margin-top: 15px;"></div>
+        </div>
+
+        <div class="admin-button-link">
+            <button type="button" onclick="toggleAdminLogin()">🔐 Admin</button>
+        </div>
+
+        <div class="info">
+            <strong>Login Instructions:</strong><br>
+            Enter your full names, ID number, phone number, and create a password to login.
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-modal-content">
+            <h2>Administrator Login</h2>
+            <div class="admin-error-message" id="adminErrorMessage"></div>
+            <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label for="adminUsername">Username</label>
+                    <input type="text" id="adminUsername" name="adminUsername" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" name="adminPassword" required>
+                </div>
+
+                <div class="admin-modal-buttons">
+                    <button type="submit" class="submit-btn">Login</button>
+                    <button type="button" class="cancel-btn" onclick="toggleAdminLogin()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is already logged in
+        if (sessionStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'index.html';
+        }
+
+        // Store user data in localStorage (permanent storage for ID-password pairs)
+        const users = JSON.parse(localStorage.getItem('lumwod_users')) || {};
+
+        function toggleForgotPassword() {
+            const forgotSection = document.getElementById('forgotPasswordSection');
+            forgotSection.classList.toggle('show');
+            if (forgotSection.classList.contains('show')) {
+                document.getElementById('forgotFullname').focus();
+            }
+        }
+
+        function handleForgotPassword(event) {
+            event.preventDefault();
+
+            const forgotFullname = document.getElementById('forgotFullname').value.trim();
+            const forgotID = document.getElementById('forgotID').value.trim();
+            const forgotErrorMessage = document.getElementById('forgotErrorMessage');
+            const passwordResult = document.getElementById('passwordResult');
+
+            // Clear previous messages
+            forgotErrorMessage.style.display = 'none';
+            forgotErrorMessage.textContent = '';
+            passwordResult.classList.remove('show');
+
+            // Validate inputs
+            if (forgotFullname === '' || forgotID === '') {
+                forgotErrorMessage.textContent = 'Please enter both full name and ID number';
+                forgotErrorMessage.style.display = 'block';
+                return;
+            }
+
+            // Search for user in database
+            const user = users[forgotID];
+
+            if (!user) {
+                forgotErrorMessage.textContent = 'No account found with this ID number. Please check and try again.';
+                forgotErrorMessage.style.display = 'block';
+                return;
+            }
+
+            // Verify full name matches (case-insensitive)
+            if (user.fullname.toLowerCase() !== forgotFullname.toLowerCase()) {
+                forgotErrorMessage.textContent = 'The full name does not match the ID number. Please check and try again.';
+                forgotErrorMessage.style.display = 'block';
+                return;
+            }
+
+            // Password found - display it
+            document.getElementById('passwordDisplay').textContent = user.password;
+            passwordResult.classList.add('show');
+            document.getElementById('forgotForm').reset();
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const fullname = document.getElementById('fullname').value.trim().toUpperCase();
+            const idnumber = document.getElementById('idnumber').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const existingAccountSection = document.getElementById('existingAccountSection');
+            const loginForm = document.getElementById('loginForm');
+
+            // Clear previous messages
+            errorMessage.style.display = 'none';
+            errorMessage.textContent = '';
+            successMessage.style.display = 'none';
+            successMessage.textContent = '';
+            existingAccountSection.classList.remove('show');
+
+            // Validate inputs
+            if (fullname === '' || idnumber === '' || phone === '' || password === '') {
+                errorMessage.textContent = 'Please fill in all fields';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Check if ID already exists
+            const user = users[idnumber];
+            if (user) {
+                // ID already has an account - show existing account section
+                loginForm.style.display = 'none';
+                existingAccountSection.classList.add('show');
+                document.getElementById('existingAccountMessage').textContent = `It seems you already have an account with ID ${idnumber}, please log in`;
+                document.getElementById('quickID').value = idnumber;
+                document.getElementById('quickID').focus();
+                return;
+            }
+
+            // Validate password length
+            if (password.length < 4) {
+                errorMessage.textContent = 'Password must be at least 4 characters long';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Check if this ID is already logged in
+            const loggedInUsers = JSON.parse(sessionStorage.getItem('lumwod_loggedInUsers')) || [];
+            if (loggedInUsers.find(u => u.idnumber === idnumber)) {
+                errorMessage.textContent = 'This ID is already logged in. Please log out first.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Show loading
+            const loading = document.getElementById('loading');
+            const loginBtn = document.getElementById('loginBtn');
+            loading.style.display = 'block';
+            loginBtn.disabled = true;
+
+            // Simulate API delay
+            setTimeout(() => {
+                // New user - create account with provided password
+                users[idnumber] = {
+                    fullname: fullname,
+                    idnumber: idnumber,
+                    phone: phone,
+                    password: password,
+                    role: 'user',
+                    createdDate: new Date().toISOString()
+                };
+
+                // Save to localStorage
+                localStorage.setItem('lumwod_users', JSON.stringify(users));
+
+                // Add to logged-in users
+                loggedInUsers.push({
+                    fullname: fullname,
+                    idnumber: idnumber,
+                    phone: phone,
+                    role: 'user',
+                    loginTime: new Date().getTime()
+                });
+
+                // Save logged-in users to sessionStorage
+                sessionStorage.setItem('lumwod_loggedInUsers', JSON.stringify(loggedInUsers));
+
+                // Set session variables with the registered account name
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('username', fullname);
+                sessionStorage.setItem('role', 'user');
+                sessionStorage.setItem('idnumber', idnumber);
+                sessionStorage.setItem('currentUser', JSON.stringify({
+                    fullname: fullname,
+                    idnumber: idnumber,
+                    phone: phone,
+                    role: 'user',
+                    loginTime: new Date().getTime()
+                }));
+
+                // Show success message
+                successMessage.textContent = `${fullname} registered and logged in successfully!`;
+                successMessage.style.display = 'block';
+
+                // Clear form
+                document.getElementById('loginForm').reset();
+                document.getElementById('fullname').focus();
+
+                // Update logged-in users display
+                updateLoggedInUsersDisplay();
+
+                // Reset loading state
+                loading.style.display = 'none';
+                loginBtn.disabled = false;
+
+                // Redirect to home page
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }, 500);
+        }
+
+        function toggleQuickLogin() {
+            const quickLoginForm = document.getElementById('quickLoginForm');
+            quickLoginForm.classList.toggle('show');
+            if (quickLoginForm.classList.contains('show')) {
+                document.getElementById('quickPassword').focus();
+            }
+        }
+
+        function handleQuickLogin(event) {
+            event.preventDefault();
+
+            const quickID = document.getElementById('quickID').value.trim();
+            const quickPassword = document.getElementById('quickPassword').value;
+            const quickErrorMessage = document.getElementById('quickErrorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            // Clear previous messages
+            quickErrorMessage.style.display = 'none';
+            quickErrorMessage.textContent = '';
+            successMessage.style.display = 'none';
+            successMessage.textContent = '';
+
+            // Validate inputs
+            if (quickID === '' || quickPassword === '') {
+                quickErrorMessage.textContent = 'Please enter both ID number and password';
+                quickErrorMessage.style.display = 'block';
+                return;
+            }
+
+            // Check if user exists
+            const user = users[quickID];
+
+            if (!user) {
+                quickErrorMessage.textContent = 'No account found with this ID number.';
+                quickErrorMessage.style.display = 'block';
+                return;
+            }
+
+            // Verify password
+            if (user.password !== quickPassword) {
+                quickErrorMessage.textContent = 'Invalid password. Please try again.';
+                quickErrorMessage.style.display = 'block';
+                document.getElementById('quickPassword').value = '';
+                return;
+            }
+
+            // Check if this ID is already logged in
+            const loggedInUsers = JSON.parse(sessionStorage.getItem('lumwod_loggedInUsers')) || [];
+            if (loggedInUsers.find(u => u.idnumber === quickID)) {
+                quickErrorMessage.textContent = 'This ID is already logged in. Please log out first.';
+                quickErrorMessage.style.display = 'block';
+                return;
+            }
+
+            // Password matches - add to logged-in users
+            loggedInUsers.push({
+                fullname: user.fullname,
+                idnumber: user.idnumber,
+                phone: user.phone,
+                role: user.role || 'user',
+                loginTime: new Date().getTime()
+            });
+
+            // Save logged-in users to sessionStorage
+            sessionStorage.setItem('lumwod_loggedInUsers', JSON.stringify(loggedInUsers));
+
+            // Set session variables
+            sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('username', user.fullname);
+            sessionStorage.setItem('role', user.role || 'user');
+            sessionStorage.setItem('idnumber', user.idnumber);
+            sessionStorage.setItem('currentUser', JSON.stringify({
+                fullname: user.fullname,
+                idnumber: user.idnumber,
+                phone: user.phone,
+                role: user.role || 'user',
+                loginTime: new Date().getTime()
+            }));
+
+            // Show success message
+            successMessage.textContent = `${user.fullname} logged in successfully!`;
+            successMessage.style.display = 'block';
+
+            // Update logged-in users displayxxlo
+            updateLoggedInUsersDisplay();
+
+            // Redirect to home
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function updateLoggedInUsersDisplay() {
+            const loggedInUsers = JSON.parse(sessionStorage.getItem('lumwod_loggedInUsers')) || [];
+            const usersList = document.getElementById('usersList');
+            const loggedInUsersDiv = document.getElementById('loggedInUsersDiv');
+
+            if (loggedInUsers.length === 0) {
+                loggedInUsersDiv.style.display = 'none';
+                usersList.innerHTML = '';
+                return;
+            }
+
+            loggedInUsersDiv.style.display = 'block';
+            usersList.innerHTML = loggedInUsers.map((user, index) => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <div class="name">${user.fullname}</div>
+                        <div class="details">ID: ${user.idnumber} | Phone: ${user.phone}</div>
+                    </div>
+                    <div>
+                        <button type="button" class="switch-btn" onclick="switchUser(${index})">Use Account</button>
+                        <button type="button" class="logout-btn" onclick="logoutUser(${index})">Logout</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function switchUser(index) {
+            const loggedInUsers = JSON.parse(sessionStorage.getItem('lumwod_loggedInUsers')) || [];
+            if (loggedInUsers[index]) {
+                const user = loggedInUsers[index];
+                sessionStorage.setItem('currentUser', JSON.stringify(user));
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('username', user.fullname);
+                sessionStorage.setItem('role', user.role || 'user');
+                sessionStorage.setItem('idnumber', user.idnumber);
+                window.location.href = 'index.html';
+            }
+        }
+
+        function logoutUser(index) {
+            const loggedInUsers = JSON.parse(sessionStorage.getItem('lumwod_loggedInUsers')) || [];
+            const removed = loggedInUsers.splice(index, 1);
+            sessionStorage.setItem('lumwod_loggedInUsers', JSON.stringify(loggedInUsers));
+            
+            // Show logout message
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = `${removed[0].fullname} logged out successfully!`;
+            successMessage.style.display = 'block';
+            successMessage.style.backgroundColor = '#fff3cd';
+            successMessage.style.color = '#856404';
+            successMessage.style.borderColor = '#ffeaa7';
+
+            // Update display
+            updateLoggedInUsersDisplay();
+        }
+
+        // Check if already logged in and update display on page load
+        window.addEventListener('load', () => {
+            updateLoggedInUsersDisplay();
+        });
+
+        function toggleAdminLogin() {
+            const adminModal = document.getElementById('adminModal');
+            adminModal.classList.toggle('show');
+            if (adminModal.classList.contains('show')) {
+                document.getElementById('adminUsername').focus();
+                document.getElementById('adminErrorMessage').style.display = 'none';
+                document.getElementById('adminLoginForm').reset();
+            }
+        }
+
+        function handleAdminLogin(event) {
+            event.preventDefault();
+
+            const adminUsername = document.getElementById('adminUsername').value.trim();
+            const adminPassword = document.getElementById('adminPassword').value;
+            const adminErrorMessage = document.getElementById('adminErrorMessage');
+
+            // Clear previous errors
+            adminErrorMessage.style.display = 'none';
+            adminErrorMessage.textContent = '';
+
+            // Validate credentials
+            if (adminUsername === 'LUMWOD' && adminPassword === 'LIZ.LUMWOD....') {
+                // Simulate API delay
+                setTimeout(() => {
+                    // Store admin login info
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    sessionStorage.setItem('isAdmin', 'true');
+                    sessionStorage.setItem('fullname', 'Administrator');
+                    sessionStorage.setItem('role', 'admin');
+                    sessionStorage.setItem('loginTime', new Date().getTime());
+
+                    // Set as current user
+                    sessionStorage.setItem('currentUser', JSON.stringify({
+                        fullname: 'Administrator',
+                        idnumber: 'ADMIN',
+                        phone: 'System',
+                        role: 'admin',
+                        loginTime: new Date().getTime()
+                    }));
+
+                    // Redirect to home page
+                    window.location.href = 'index.html';
+                }, 500);
+            } else {
+                // Invalid credentials
+                adminErrorMessage.textContent = 'Invalid admin username or password';
+                adminErrorMessage.style.display = 'block';
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+    </script>
+</body>
+</html>
